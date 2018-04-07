@@ -23,7 +23,7 @@ def DateFunctions(request):
         yesterday = datetime.now() - timedelta(days=1)
         return yesterday.strftime('%Y%m%d')
     elif request == 'time':
-        return datetime.now().strftime('%Y%m%d%H%m%S')
+        return datetime.now().strftime('%Y%m%d_%H%m%S')
     else:
         return datetime.now().strftime('%Y%m%d')
 
@@ -267,7 +267,7 @@ Dataset='DELTA' # chnage this to something else ('DELTA') if you want to see dif
 CurrFileName = GenerateFileName(path, 'Current', 'NEWS', 'TXT','N')
 PrevFileName = GenerateFileName(path, 'Previous', 'NEWS', 'TXT','N')
 RenameFile(CurrFileName,PrevFileName)
-CountsFileName = GenerateFileName(path, 'time', Dataset+'-NewsDetails', 'xls','Y')
+CountsFileName = GenerateFileName(path, 'time', Dataset+'_NewsDetails', 'xls','Y')
 
 NewLinks = []
 TodaysNewsALL = CreateLinksFile(CurrFileName)
@@ -287,9 +287,9 @@ if len(TodaysNewsLatest) <>0:
         df_POSData=pd.DataFrame(WorndsNCountsNPOS)    
 
         df_POSData.to_excel(ExWriter,SheetName, index=False,startrow=3)
-        print('TAB :-->{} Created'.format(SheetName))
+        #print('TAB :-->{} Created'.format(SheetName))
         ExWriter.save()
-		
+    print('News read operation Complete--for details ,you may look into file-{}'.format(CountsFileName))	
 else:
 
     print('No latest News to read...please refer to previous excel or set Dataset to ALL to see full list of news'  )
