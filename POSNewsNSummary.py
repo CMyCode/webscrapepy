@@ -1,3 +1,9 @@
+#  Date(mm-dd-yyyy)  Author   change
+#  04-09-2018        CMyCode  Current file exists check in RenameFile function
+#                                        and 
+#                             Punctuation check in GetWordCount2
+#                              AND some minor changes 
+
 import requests
 from bs4 import BeautifulSoup
 import re
@@ -107,7 +113,7 @@ def CompareAndGenDiff(CurrLinks, PrevFile,Dataset):
 
                                     return NewLinks
         else:
-                print('Either previous day file not present or dataset was set to ALL')
+                print('Either Previous\Current day file not present or dataset was set to ALL')
                 return list(CurrLinks.keys())
                                                 
                                                 
@@ -137,7 +143,7 @@ def GetWordCount2(data):
     # print 'WORD::::::::::COUNT'
 
     for (k, v) in list(wordcount.items()):
-        if k.lower() in stop_words:
+        if (k.lower() in stop_words or k.lower()  in list(string.punctuation) ):
             del wordcount[k]
         else:
             #print(PosTags(k))
@@ -244,10 +250,14 @@ def PosTags(word):
                 return 'ADJECTIVE'
             elif any ([ValNTag[0][1]=="RB",ValNTag[0][1]=="RBR",ValNTag[0][1]=="RBS",ValNTag[0][1]=="WRB"]):
                 return 'ADVERB'
+            elif any ([ValNTag[0][1]=="IN"]):
+                return 'PREP/CONJ'
+            elif any ([ValNTag[0][1]=="CD"]):
+                return 'NUM/CARDINAL'
             else :
-                                                    return 'OTHERS'
+                return 'OTHERS'
         else:
-                                    return 'OTHERS'                 
+                                    return 'OTHERS'                
                     
 
 def RenameFile(NewFname,oldFname):
@@ -256,8 +266,8 @@ def RenameFile(NewFname,oldFname):
 	    print('Renaming {}-->{}'.format(oldFname,oldFname+tstamp) )
 	    tstamp=DateFunctions('time')
 	    os.rename(oldFname,oldFname+tstamp)
-	    
-    os.rename(NewFname,oldFname)                                              
+    if os.path.exists(NewFname):    
+        os.rename(NewFname,oldFname)                                              
 
 
 # Program starts in here
@@ -272,7 +282,7 @@ CountsFileName = GenerateFileName(path, 'time', Dataset+'_NewsDetails', 'xls','Y
 NewLinks = []
 TodaysNewsALL = CreateLinksFile(CurrFileName)
 TodaysNewsLatest = CompareAndGenDiff(TodaysNewsALL, PrevFileName,Dataset)
-if len(TodaysNewsLatest) <>0:
+if len(TodaysNewsLatest) !=0:
 
     ExWriter = pd.ExcelWriter(CountsFileName)
     Index=pd.DataFrame(TodaysNewsLatest,columns=["NewsLinks"])
