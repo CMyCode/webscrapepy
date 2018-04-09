@@ -273,7 +273,7 @@ def RenameFile(NewFname,oldFname):
 # Program starts in here
 path = os.getcwd()
 #path='D:\python\News' #edit this with the path you need 
-Dataset='DELTA' # chnage this to something else ('DELTA') if you want to see difference data
+Dataset='DELTA' # chnage this to something else ('DELTA'/'ALL') if you want to see difference/full data
 CurrFileName = GenerateFileName(path, 'Current', 'NEWS', 'TXT','N')
 PrevFileName = GenerateFileName(path, 'Previous', 'NEWS', 'TXT','N')
 RenameFile(CurrFileName,PrevFileName)
