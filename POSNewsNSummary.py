@@ -2,7 +2,7 @@
 #  04-09-2018        CMyCode  Current file exists check in RenameFile function
 #                                        and 
 #                             Punctuation check in GetWordCount2
-#                              AND some minor changes 
+#                              AND some minor changes related to formatting
 
 import requests
 from bs4 import BeautifulSoup
