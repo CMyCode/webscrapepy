@@ -2,7 +2,8 @@
 #  04-09-2018        CMyCode  Current file exists check in RenameFile function
 #                                        and 
 #                             Punctuation check in GetWordCount2
-#                              AND some minor changes related to formatting
+#                              AND some minor changes 
+# 06-01-2018         CMyCode  Fix for Issue: missing an intermediate certificate 
 
 import requests
 from bs4 import BeautifulSoup
@@ -19,6 +20,8 @@ from random import *
 import string
 import nltk
 from nltk.tokenize import TreebankWordTokenizer
+import urllib3
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 nltk.download('stopwords')
 # Function to generate date in required format
@@ -69,7 +72,7 @@ def CreateLinksFile(file):
     AllLinks = {}
     Cnt = 1
     url = 'http://tolivelugu.com/'
-    resp = requests.get(url)
+    resp = requests.get(url,verify = False)
     if resp.status_code == 200:
         print( 'Successfully opened the web page:--> {}'.format(url))
 
@@ -157,7 +160,7 @@ def GetWordCount2(data):
 # Function to read content from the link provided
 
 def ReadNews(link):
-    lresp = requests.get(link)
+    lresp = requests.get(link,verify = False)
     if lresp.status_code == 200:
         print ('Successfully opened the web page:-->{}'.format(link))
         #print 'Content Below:-\n'
@@ -179,7 +182,7 @@ def ReadNews(link):
                 text = j.find_all(text=True)
                 return text  # .encode('utf-8')
     else:
-        print ('Error')
+        print ('******Error--could not open THIS LINK **********')
 
 
 # Function to Generate WORD COUNT exclduing stop words
@@ -280,14 +283,17 @@ RenameFile(CurrFileName,PrevFileName)
 CountsFileName = GenerateFileName(path, 'time', Dataset+'_NewsDetails', 'xls','Y')
 
 NewLinks = []
+print('balaji')
 TodaysNewsALL = CreateLinksFile(CurrFileName)
 TodaysNewsLatest = CompareAndGenDiff(TodaysNewsALL, PrevFileName,Dataset)
+
 if len(TodaysNewsLatest) !=0:
 
     ExWriter = pd.ExcelWriter(CountsFileName)
     Index=pd.DataFrame(TodaysNewsLatest,columns=["NewsLinks"])
     Index.to_excel(ExWriter,'Index', index=False)
     for todaysnews in TodaysNewsLatest:
+        print(todaysnews)
         Content = ReadNews(todaysnews)
         WorndsNCountsNPOS = GetWordCount2(Content)
         SheetName = GetExcelSheetName(todaysnews)+RandomTextGen()
